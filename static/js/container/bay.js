@@ -4,7 +4,7 @@ export {
 }
 
 
-function Bay(canvas,ctxHatch,dlType,x, y, w, h, color, t){
+function Bay(canvas,dlType,x, y, w, h, color, t){
   const bayData=[];
   this.bayData = function () {
     return bayData;
@@ -34,14 +34,6 @@ function Bay(canvas,ctxHatch,dlType,x, y, w, h, color, t){
         bayData.push(value)
       }
     }
-    // console.log(bayData)
-  }
-  function onClick(event) {
-    ctxHatch.beginPath();
-    ctxHatch.arc(20, 20, 20, 0, Math.PI * 2, true);
-    ctxHatch.fillStyle = '#000';
-    ctxHatch.fill();
-    ctxHatch.closePath();
   }
 }
 

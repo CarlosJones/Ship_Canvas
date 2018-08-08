@@ -1,9 +1,11 @@
 <template>
   <div class="ship">
-    <canvas id="shipCanvas"  width="2000" height="200" style="border:1px solid #00000f;">
-      您的浏览器不支持 HTML5 canvas 标签。
-    </canvas>
-    <div class="layui-main">
+    <div id="shipDIV" class="layout">
+      <canvas id="shipCanvas"  width="2000" height="200" style="border:1px solid #00000f;">
+        您的浏览器不支持 HTML5 canvas 标签。
+      </canvas>
+    </div>
+    <div class="layout">
       <div class='layui-tab' lay-filter="demo" lay-allowclose="true">
         <ul class="layui-tab-title">
           <!--<li lay-id="11" class="layui-this">例子</li>-->
@@ -112,4 +114,11 @@ li {
 a {
   color: #42b983;
 }
+.layout {
+  float: left;
+  height: 100%;
+  width: 50%;
+  overflow:auto;
+}
+
 </style>

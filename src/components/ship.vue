@@ -119,6 +119,8 @@ a {
   height: 100%;
   width: 50%;
   overflow:auto;
+  display: flex;
+  align-items: center; /*定义body的元素垂直居中*/
 }
 
 </style>

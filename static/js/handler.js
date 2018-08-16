@@ -6,7 +6,7 @@ const hatchRowSeqList=[12,10,8,6,4,2,0,1,3,5,7,9,11]
 var tierListA = [94,92,90,88,86,84,82]
 var tierListB = [16,14,12,10]
 const width = 30
-function Handler(ctx,item){
+function Handler(ctx,item,allData){
   this.draw = function(){
     ctx.fillStyle='#ffffff'
     ctx.fillRect(0, 0, 1000, 600);
@@ -26,7 +26,7 @@ function Handler(ctx,item){
       ctx.rect(bx, by, bayWidth, bayHight);
       ctx.font = "20px Georgia";
       ctx.fillStyle = "#FF1012";
-      ctx.fillText(e.x+' '+e.y, bx, by+20);
+      ctx.fillText('舱'+e.hatchId, bx, by+20);
       ctx.stroke();
       //画层号
       for(var i=0;i<t.length+1;i++){

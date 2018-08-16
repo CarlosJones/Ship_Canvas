@@ -15,65 +15,54 @@
         </div>
       </div>
     </div>
+    <div id="divRead"></div>
   </div>
 </template>
 
 <script>
-  import {Bay} from '../../static/js/container/bay.js'
-  import {Outline} from '../../static/js/outline/outline.js'
   import {Handler} from "../../static/js/handler"
-  import  '../../static/layui/jquery'
+  import  '../../static/js/jquery.min.js'
   import  '../../static/layui/layui.js'
   import  '../../static/layui/lay/modules/jquery'
   import  '../../static/layui/lay/modules/element'
+  import {ParseData} from "../../static/js/data/parseData"
 
   export default {
   name: 'ship',
   mounted:function () {
-    const shipData = []
-    var shipCanvas = document.getElementById('shipCanvas')
-    var ctx = shipCanvas.getContext('2d')
+    let shipData = []
+    let allData = []
+    let shipCanvas = document.getElementById('shipCanvas')
+    let ctx = shipCanvas.getContext('2d')
     ctx.fillStyle = '#000000'
     ctx.fillRect(0,0,2000,200)
-    var outline = new Outline(shipCanvas)
-    outline.draw()
-    var row1B = new Bay(shipCanvas,'B',300,80,20,5,'#0000E3',8)
-    row1B.draw()
-    shipData.push(row1B.bayData())
-    var row1A = new Bay(shipCanvas,'A',300,80,20,5,'#0000E3',8)
-    row1A.draw()
-    shipData.push(row1A.bayData())
-    var row2B = new Bay(shipCanvas,'B',323,80,20,5,'#FFFFFF',8)
-    shipData.push(row2B.bayData())
-    row2B.draw()
-    var row2A = new Bay(shipCanvas,'A',323,80,20,5,'#FFFFFF',8)
-    shipData.push(row2A.bayData())
-    row2A.draw()
+    var parseData = new ParseData(shipCanvas)
+    parseData.readFile(shipCanvas,function(shipData1,data){
+      shipData = shipData1
+      allData = data
+    })
     //-----------对轮廓图事件进行监听-----------------------
     let  pUp;
     shipCanvas.addEventListener('mouseup', function (e) {
-      // console.log(e)
       pUp = getEventPosition(e);
-      // console.log(pUp);
-      // console.log(shipData)
-      for(var bayD of shipData){
+      for(let bayD of shipData){
         for (const item of bayD) {
           if(item.x<=pUp.x && (item.x+item.w)>=pUp.x
             && item.y<=pUp.y && (item.y+item.h)>=pUp.y){
 //-----------------------------------------------------------------------------
             layui.use('element',function(){
-              var $=layui.jquery,element = layui.element;
-              var canvasId = new Date().getTime()
+              let $=layui.jquery,element = layui.element;
+              let canvasId = new Date().getTime()
               console.log(element);
               element.tabAdd('demo',{
-                title:'新选项卡'
+                title:item.bayNo+'贝'
                 ,content:'<canvas '+'id='+canvasId+' width="1000" height="600" style="border:1px solid #00000f;">您的浏览器不支持 HTML5 canvas 标签。</canvas>'
                 ,id:canvasId
               })
               element.tabChange('demo',canvasId)
-              var hatchCanvas = document.getElementById(canvasId)
-              var ctxHatch = hatchCanvas.getContext('2d')
-              var handle = new Handler(ctxHatch,item)
+              let hatchCanvas = document.getElementById(canvasId)
+              let ctxHatch = hatchCanvas.getContext('2d')
+              let handle = new Handler(ctxHatch,item,allData)
               handle.draw()
             })
  //----------------------------------------------------------------------

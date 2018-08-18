@@ -15,7 +15,6 @@
         </div>
       </div>
     </div>
-    <div id="divRead"></div>
   </div>
 </template>
 
@@ -43,7 +42,9 @@
     })
     //-----------对轮廓图事件进行监听-----------------------
     let  pUp;
-    shipCanvas.addEventListener('mouseup', function (e) {
+    shipCanvas.addEventListener('click', function (e) {
+      // console.log(e.screenX+' '+e.screenY)
+      // console.log(e.clientX+' '+e.clientY)
       pUp = getEventPosition(e);
       for(let bayD of shipData){
         for (const item of bayD) {
@@ -70,7 +71,14 @@
         }
       }
    }, false);
-//----------------------------------------------------------------------
+//----------------------对轮廓图事件进行监听------------------------------------------------
+//--------------模拟鼠标点击-----------------------------------------------------------------
+//     let target = document.getElementById('shipCanvas');
+    let target = document.getElementById('shipDIV');
+    let eventObj = document.createEvent('MouseEvents');
+    eventObj.initMouseEvent('click',true,true,window,1,207,452,207,356,false,false,true,false,0,null);
+    target.dispatchEvent(eventObj);
+//---------------------------------------------------------------------------------------------
     function getEventPosition(ev) {
       let x, y;
       if (ev.layerX || ev.layerX === 0) {

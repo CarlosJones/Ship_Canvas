@@ -7,17 +7,80 @@ var tierListA = [94,92,90,88,86,84,82]
 var tierListB = [16,14,12,10]
 const width = 30
 function Handler(ctx,item,allData){
+  let bayId = item.bayId
+  let bayLocations = []
+  let tierNumberList = []
+  let rowSeqList = []
+  this.parseData = function(item,allData){
+      this.getTierInfo(item,allData)
+      this.getSeqList(item,allData)
+  }
+  this.getSeqList = function(item,allData){
+    //目标，每个倍，排号的顺序
+    $.each(allData.smartVpsVslRowsInfoList,function(index,obj){
+      if(obj.bayId == bayId){
+        rowSeqList.push(obj.rowNo)
+        rowSeqList.sort()
+      }
+    })
+    this.getRowSeqListBySeaOrLand(rowSeqList,'ROW_SEQ_EVEN_ODD')
+  }
+  this.getRowSeqListBySeaOrLand = function(rowList,oddOrEven){
+    let rowNoList = []
+    $.each(rowList,function(index,obj){
+      if(parseInt(obj)%2 == 0){
+          rowNoList.unshift(obj)
+      }else{
+          rowNoList.push(obj)
+      }
+    })
+    if(oddOrEven == 'ROW_SEQ_EVEN_ODD'){
+      rowSeqList = rowNoList
+    }else{
+      rowNoList.reverse()
+      rowSeqList = rowNoList
+    }
+    console.log(rowSeqList)
+  }
+  this.getTierInfo = function(item,allData){
+    //目标，每个倍，最高层和最低层的层数
+    let topTierNum = -1
+    let bottomTierNum = 1000
+    let allLocations = allData.smartVpsVslLocationsInfoList
+    $.each(allLocations,function(index,obj){
+      if(obj.bayId == bayId){
+        bayLocations.push(obj)
+      }
+    })
+    $.each(bayLocations,function(index,obj){
+      let location = obj.location
+      let tier = location.substring(4,6)
+      if(tier>topTierNum){
+        topTierNum = tier
+      }
+      if(tier<bottomTierNum){
+        bottomTierNum = tier
+      }
+    })
+    if(bottomTierNum<topTierNum){
+      for(let i=parseInt(topTierNum);i>=parseInt(bottomTierNum);i-=2){
+        tierNumberList.push(i)
+      }
+    }
+    console.log(tierNumberList.toString())
+  }
   this.draw = function(){
+    this.parseData(item,allData)
     ctx.fillStyle='#ffffff'
     ctx.fillRect(0, 0, 1000, 600);
     //画第一个倍
-      singleBay(ctx,item,0,0,tierListA,hatchRowSeqList)
+      singleBay(ctx,item,10,10,tierNumberList,rowSeqList)
     //画第二个倍
-      singleBay(ctx,item,0,(tierListA.length+4)*width,tierListB,hatchRowSeqList)
+    //   singleBay(ctx,item,0,(tierListA.length+4)*width,tierListB,hatchRowSeqList)
     //画第三个倍
-    singleBay(ctx,item,(hatchRowSeqList.length+4)*width,0,tierListA,hatchRowSeqList)
+    // singleBay(ctx,item,(hatchRowSeqList.length+4)*width,0,tierListA,hatchRowSeqList)
     //画第四个倍
-    singleBay(ctx,item,(hatchRowSeqList.length+4)*width,(tierListA.length+4)*width,tierListB,hatchRowSeqList)
+    // singleBay(ctx,item,(hatchRowSeqList.length+4)*width,(tierListA.length+4)*width,tierListB,hatchRowSeqList)
   }
   function singleBay(ctx,e,bx,by,t,r){
       var bayWidth = (r.length+2)*width;

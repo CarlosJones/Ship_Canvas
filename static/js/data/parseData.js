@@ -87,7 +87,7 @@ function outline(canvas,direction,hatchList,machineList,bayList,shipData){
       })
       twoBayNo.sort()
       for(let j=0;j<bays.length;j++){
-        let drawBay = new Bay(canvas,bays[j].deckOrHatch,position+((2*i+twoBayNo.indexOf(bays[j].bayNo))*hatchList[i].hatchLength),80,hatchList[i].hatchLength-2,5,'#0000E3',8,bays[j].bayNo,bays[j].hatchId)
+        let drawBay = new Bay(canvas,bays[j].deckOrHatch,position+((2*i+twoBayNo.indexOf(bays[j].bayNo))*hatchList[i].hatchLength),80,hatchList[i].hatchLength-2,5,'#0000E3',8,bays[j].bayId,bays[j].bayNo,bays[j].hatchId)
         drawBay.draw()
         shipData.push(drawBay.bayData())
       }
@@ -152,7 +152,7 @@ function outline(canvas,direction,hatchList,machineList,bayList,shipData){
         })
         twoBayNo.sort()
         $.each(bays, function (iBay, bay) {
-            let drawBay = new Bay(canvas, bay.deckOrHatch, position + ((2*(i-preHatchSeq)+twoBayNo.indexOf(bay.bayNo)) * hatchList[i].hatchLength), 80, hatchList[i].hatchLength-2, 5, '#0000E3', 8,bay.bayNo,bay.hatchId)
+            let drawBay = new Bay(canvas, bay.deckOrHatch, position + ((2*(i-preHatchSeq)+twoBayNo.indexOf(bay.bayNo)) * hatchList[i].hatchLength), 80, hatchList[i].hatchLength-2, 5, '#0000E3', 8,bay.bayId,bay.bayNo,bay.hatchId)
             drawBay.draw()
             shipData.push(drawBay.bayData())
         })
@@ -222,7 +222,7 @@ function outline(canvas,direction,hatchList,machineList,bayList,shipData){
         })
         twoBayNo.sort()
         $.each(bays, function (iBay, bay) {
-          let drawBay = new Bay(canvas, bay.deckOrHatch, position + ((2 * (i - preHatchSeq) + twoBayNo.indexOf(bay.bayNo)) * hatchList[i].hatchLength), 80, hatchList[i].hatchLength - 2, 5, '#0000E3', 8, bay.bayNo,bay.hatchId)
+          let drawBay = new Bay(canvas, bay.deckOrHatch, position + ((2 * (i - preHatchSeq) + twoBayNo.indexOf(bay.bayNo)) * hatchList[i].hatchLength), 80, hatchList[i].hatchLength - 2, 5, '#0000E3', 8,bay.bayId, bay.bayNo,bay.hatchId)
           drawBay.draw()
           shipData.push(drawBay.bayData())
         })

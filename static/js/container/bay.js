@@ -5,7 +5,7 @@ export {
 }
 
 
-function Bay(canvas,dlType,x, y, w, h, color, t,bayNo,hatchId){
+function Bay(canvas,dlType,x, y, w, h, color, t,bayId,bayNo,hatchId){
   const bayData=[];
   this.bayData = function () {
     return bayData;
@@ -17,6 +17,7 @@ function Bay(canvas,dlType,x, y, w, h, color, t,bayNo,hatchId){
         let value={};
         value['hatchId']=hatchId
         value['bayNo']=bayNo
+        value['bayId']=bayId
         value['x']=x
         value['y']=y+i*h+1*i
         value['w']=w

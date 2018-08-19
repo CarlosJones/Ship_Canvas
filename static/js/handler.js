@@ -2,47 +2,120 @@ export{
   Handler
 }
 
-const hatchRowSeqList=[12,10,8,6,4,2,0,1,3,5,7,9,11]
-var tierListA = [94,92,90,88,86,84,82]
-var tierListB = [16,14,12,10]
 const width = 30
 function Handler(ctx,item,allData){
-  let bayId = item.bayId
-  let bayLocations = []
-  let tierNumberList = []
-  let rowSeqList = []
-  this.parseData = function(item,allData){
-      this.getTierInfo(item,allData)
-      this.getSeqList(item,allData)
-  }
-  this.getSeqList = function(item,allData){
-    //目标，每个倍，排号的顺序
-    $.each(allData.smartVpsVslRowsInfoList,function(index,obj){
-      if(obj.bayId == bayId){
-        rowSeqList.push(obj.rowNo)
-        rowSeqList.sort()
+  //舱中所有的倍
+  let bayList = []
+  let bayNoList = []
+  this.getAllBays = function(item,allData){
+    let hatchId = item.hatchId
+    let allbays = allData.smartVpsVslBaysInfoList
+
+    $.each(allbays,function(index,bay){
+      if(bay.hatchId == hatchId){
+        bayList.push(bay)
+        if($.inArray(bay.bayNo,bayNoList) == -1){
+          bayNoList.push(bay.bayNo)
+        }
       }
     })
-    this.getRowSeqListBySeaOrLand(rowSeqList,'ROW_SEQ_EVEN_ODD')
+    bayNoList.sort()
   }
-  this.getRowSeqListBySeaOrLand = function(rowList,oddOrEven){
-    let rowNoList = []
+  this.processBay = function(item,allData){
+    //用来确定贝的启始位置
+    let height = 0
+    let bayWidth = 0
+    ctx.fillStyle='#ffffff'
+    ctx.fillRect(0, 0, 1000, 1000)
+    this.getAllBays(item,allData)
+    //画第一个倍
+    for(let i=0;i<bayList.length;i++) {
+      if (bayList[i].bayNo == bayNoList[0] && bayList[i].deckOrHatch == "D") {
+        let bayId = bayList[i].bayId
+        let bayLocations = []
+        let tierNumberList = []
+        let rowSeqList = []
+        this.parseData(item, allData, bayLocations, tierNumberList, rowSeqList, bayId)
+        singleBay(ctx,bayList[i],10,10,tierNumberList,rowSeqList,bayLocations)
+        height = tierNumberList.length
+        bayWidth = rowSeqList.length
+      }
+    }
+    //画第二个倍
+    for(let i=0;i<bayList.length;i++) {
+        if (bayList[i].bayNo == bayNoList[0] && bayList[i].deckOrHatch == "H") {
+          let bayId = bayList[i].bayId
+          let bayLocations = []
+          let tierNumberList = []
+          let rowSeqList = []
+          this.parseData(item, allData, bayLocations, tierNumberList, rowSeqList, bayId)
+          if(bayWidth == rowSeqList.length){
+            singleBay(ctx,bayList[i],10,(height+4)*width,tierNumberList,rowSeqList,bayLocations)
+          }else if(bayWidth > rowSeqList.length){
+            singleBay(ctx,bayList[i],(10+(bayWidth - rowSeqList.length)/2*width),((height+4)*width+10),tierNumberList,rowSeqList,bayLocations)
+          }
+        }
+    }
+    //画第三个倍
+    for(let i=0;i<bayList.length;i++) {
+      if (bayList[i].bayNo == bayNoList[1] && bayList[i].deckOrHatch == "D") {
+        let bayId = bayList[i].bayId
+        let bayLocations = []
+        let tierNumberList = []
+        let rowSeqList = []
+        this.parseData(item, allData, bayLocations, tierNumberList, rowSeqList, bayId)
+        singleBay(ctx,bayList[i],(bayWidth+4)*width,10,tierNumberList,rowSeqList,bayLocations)
+        height = tierNumberList.length
+        bayWidth = rowSeqList.length
+      }
+    }
+    //画第四个倍
+    for(let i=0;i<bayList.length;i++) {
+      if (bayList[i].bayNo == bayNoList[1] && bayList[i].deckOrHatch == "H") {
+        let bayId = bayList[i].bayId
+        let bayLocations = []
+        let tierNumberList = []
+        let rowSeqList = []
+        this.parseData(item, allData, bayLocations, tierNumberList, rowSeqList, bayId)
+        if(bayWidth == rowSeqList.length){
+          singleBay(ctx,bayList[i],(bayWidth+4)*width,(height+4)*width,tierNumberList,rowSeqList,bayLocations)
+        }else if(bayWidth > rowSeqList.length){
+          singleBay(ctx,bayList[i],((bayWidth+4)*width+(bayWidth - rowSeqList.length)/2*width),((height+4)*width+10),tierNumberList,rowSeqList,bayLocations)
+        }
+      }
+    }
+  }
+
+  this.parseData = function(item,allData,bayLocations,tierNumberList,rowSeqList,bayId){
+      this.getTierInfo(item,allData,bayLocations,tierNumberList,bayId)
+      this.getSeqList(item,allData,bayId,rowSeqList)
+  }
+  //目标，每个倍，排号的顺序
+  this.getSeqList = function(item,allData,bayId,rowSeqList){
+    let rowList = []
+    $.each(allData.smartVpsVslRowsInfoList,function(index,obj){
+      if(obj.bayId == bayId){
+        rowList.push(obj.rowNo)
+        rowList.sort()
+      }
+    })
+    this.getRowSeqListBySeaOrLand(rowList,'ROW_SEQ_EVEN_ODD',rowSeqList)
+  }
+  this.getRowSeqListBySeaOrLand = function(rowList,oddOrEven,rowSeqList){
     $.each(rowList,function(index,obj){
       if(parseInt(obj)%2 == 0){
-          rowNoList.unshift(obj)
+        rowSeqList.unshift(obj)
       }else{
-          rowNoList.push(obj)
+        rowSeqList.push(obj)
       }
     })
     if(oddOrEven == 'ROW_SEQ_EVEN_ODD'){
-      rowSeqList = rowNoList
     }else{
-      rowNoList.reverse()
-      rowSeqList = rowNoList
+      rowSeqList.reverse()
     }
     console.log(rowSeqList)
   }
-  this.getTierInfo = function(item,allData){
+  this.getTierInfo = function(item,allData,bayLocations,tierNumberList,bayId){
     //目标，每个倍，最高层和最低层的层数
     let topTierNum = -1
     let bottomTierNum = 1000
@@ -70,26 +143,16 @@ function Handler(ctx,item,allData){
     console.log(tierNumberList.toString())
   }
   this.draw = function(){
-    this.parseData(item,allData)
-    ctx.fillStyle='#ffffff'
-    ctx.fillRect(0, 0, 1000, 600);
-    //画第一个倍
-      singleBay(ctx,item,10,10,tierNumberList,rowSeqList)
-    //画第二个倍
-    //   singleBay(ctx,item,0,(tierListA.length+4)*width,tierListB,hatchRowSeqList)
-    //画第三个倍
-    // singleBay(ctx,item,(hatchRowSeqList.length+4)*width,0,tierListA,hatchRowSeqList)
-    //画第四个倍
-    // singleBay(ctx,item,(hatchRowSeqList.length+4)*width,(tierListA.length+4)*width,tierListB,hatchRowSeqList)
+    this.processBay(item,allData)
   }
-  function singleBay(ctx,e,bx,by,t,r){
+  function singleBay(ctx,e,bx,by,t,r,bayLocations){
       var bayWidth = (r.length+2)*width;
       var bayHight = (t.length+2)*width;
       ctx.beginPath();
       ctx.rect(bx, by, bayWidth, bayHight);
       ctx.font = "20px Georgia";
       ctx.fillStyle = "#FF1012";
-      ctx.fillText('舱'+e.hatchId, bx, by+20);
+      ctx.fillText('舱'+e.hatchId+'贝'+e.bayNo, bx, by+20);
       ctx.stroke();
       //画层号
       for(var i=0;i<t.length+1;i++){
@@ -109,12 +172,18 @@ function Handler(ctx,item,allData){
         let x = (i+1) * width;
         for (let j = 0; j < t.length; j++) {
           let y = (j+1)*width
-          ctx.beginPath();
-          ctx.rect(bx+x, by+y, width, width);
-          let num = parseInt(100*Math.random());
-          ctx.fillText(num,bx+x, by+y+width, width, width)
-          // console.log(num)
-          ctx.stroke();
+          //判断slot是否存在
+          let p = e.bayNo+r[i]+t[j]
+          $.each(bayLocations,function(index,position){
+            if(position.location == p){
+              ctx.beginPath();
+              ctx.rect(bx+x, by+y, width, width);
+              let num = parseInt(100*Math.random());
+              ctx.fillText(num,bx+x, by+y+width, width, width)
+              // console.log(num)
+              ctx.stroke();
+            }
+          })
         }
       }
   }

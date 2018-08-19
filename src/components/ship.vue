@@ -57,7 +57,7 @@
               console.log(element);
               element.tabAdd('demo',{
                 title:item.bayNo+'贝'
-                ,content:'<canvas '+'id='+canvasId+' width="1000" height="600" style="border:1px solid #00000f;">您的浏览器不支持 HTML5 canvas 标签。</canvas>'
+                ,content:'<canvas '+'id='+canvasId+' width="1000" height="1000" style="border:1px solid #00000f;">您的浏览器不支持 HTML5 canvas 标签。</canvas>'
                 ,id:canvasId
               })
               element.tabChange('demo',canvasId)
